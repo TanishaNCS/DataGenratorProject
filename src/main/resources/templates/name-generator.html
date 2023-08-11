@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Name Generator</title>
+</head>
+<body>
+    <h1>Name Generator</h1>
+    <form id="generateForm" action="/generate" method="get">
+    <label for="numNames">Number of Names:</label>
+    <input type="number" id="numNames" name="numNames" value="0" min="1"><br><br>
+    <button type="submit">Generate Names</button>
+</form>
+
+   
+        <div id="generatedNames">
+        <h2>Generated Names:</h2>
+        <ul>
+            <li th:each="name : ${names}" th:text="${name}"></li>
+        </ul>
+    </div>
+    
+    
+
+    <script>
+        document.getElementById('generateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const numNames = document.getElementById('numNames').value;
+            //alert(numNames);
+            generateNames(numNames);
+        });
+
+        function generateNames(numNames) {
+            fetch('/generate?num=' + numNames)
+                .then(response => response.json())
+                .then(data => displayNames(data));
+        }
+
+        function displayNames(names) {
+            const generatedNamesDiv = document.getElementById('generatedNames');
+            generatedNamesDiv.innerHTML = '';
+            const ul = document.createElement('ul');
+            names.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                ul.appendChild(li);
+            });
+            generatedNamesDiv.appendChild(ul);
+        }
+    </script>
+</body>
+</html>
